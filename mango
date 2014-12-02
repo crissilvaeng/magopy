@@ -1,0 +1,47 @@
+#!/usr/bin/python
+
+from bs4 import BeautifulSoup
+import urllib2
+import sys
+
+if(len(sys.argv) == 1):
+	
+	print("Usage: mango [OPTION]... [NAME] [OPTION]...")
+	print("Try 'mango --help' for more information.")
+	
+else:
+
+	if(sys.argv[1] == "-h") or (sys.argv[1] == "--h") or (sys.argv[1] == "-help") or (sys.argv[1] == "--help"):
+		print("Usage: mango [--avaliable]... <NAME>\n")
+		print("The most commonly used mango command are:")
+		print("\tavaliable\tVerify that the manga is available")
+			
+	
+	elif(sys.argv[1] == "-a") or (sys.argv[1] == "--a") or (sys.argv[1] == "-avaliable") or (sys.argv[1] == "--avaliable"):
+		url = "http://centraldemangas.net/mangas/list/*"
+	
+		headers = { 'User-Agent' : 'Mozilla/5.0' }
+		html = urllib2.urlopen(urllib2.Request(url, None, headers)).read()
+		soup = BeautifulSoup(html)
+	
+		pages = soup.find('ul', { 'class' : 'pagination pagination-sm' }).find_all('li')
+		for n_page in xrange(len(pages)):
+			page = BeautifulSoup(urllib2.urlopen(urllib2.Request(url + "/" + str(n_page+1), None, headers)).read())
+			rows = page.find_all('tr')
+			for row in rows:
+    				cols = row.find_all('td')
+    				for col in cols: #Get ready, ugly rack this comming!
+    					stars_empty = col.find_all('span' ,attrs={'class' : 'glyphicon glyphicon-star-empty'})
+    					stars_full = col.find_all('span' ,attrs={'class' : 'glyphicon glyphicon-star'})
+    					if( len(stars_empty) + len(stars_full) == 5 ):
+	    					for star in stars_full:
+	    						print u"\u2605",
+	    					for star in stars_empty:
+	    						print u"\u2606",
+	    				if( len(stars_empty) + len(stars_full) == 0 ):
+		    				name = col.find('a').getText()
+	    					print ("\t" + str(name) + "\n")
+			
+	else:
+		print("Download!")
+	
