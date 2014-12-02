@@ -33,14 +33,16 @@ else:
     				for col in cols: #Get ready, ugly rack this comming!
     					stars_empty = col.find_all('span' ,attrs={'class' : 'glyphicon glyphicon-star-empty'})
     					stars_full = col.find_all('span' ,attrs={'class' : 'glyphicon glyphicon-star'})
-    					if( len(stars_empty) + len(stars_full) == 5 ):
+    					if(stars_empty != []) or (stars_full != []):
+    						print '\t',
 	    					for star in stars_full:
 	    						print u"\u2605",
 	    					for star in stars_empty:
 	    						print u"\u2606",
-	    				if( len(stars_empty) + len(stars_full) == 0 ):
+	    					print
+	    				else:
 		    				name = col.find('a').getText()
-	    					print ("\t" + str(name) + "\n")
+	    					print str(name),
 			
 	else:
 		print("Download!")
