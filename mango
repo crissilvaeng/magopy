@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 from bs4 import BeautifulSoup
 import urllib2
@@ -13,9 +14,10 @@ if (len(sys.argv) == 1):
 else:
 
     if (sys.argv[1] == "-h") or (sys.argv[1] == "--h") or (sys.argv[1] == "-help") or (sys.argv[1] == "--help"):
-        print("Usage: mango [--avaliable]... <NAME>\n")
+        print("Usage: mango [--avaliable][--download]... <NAME>\n")
         print("The most commonly used mango command are:")
         print("\tavaliable\tVerify that the manga is available")
+        print("\tdownload\tDownload a Manga informed")
 
     elif (sys.argv[1] == "-a") or (sys.argv[1] == "--a") or (sys.argv[1] == "-avaliable") or (
                 sys.argv[1] == "--avaliable"):
@@ -51,6 +53,25 @@ else:
                 else:
                     print u"\u2606",
             print "\t" + i[0]
+
+    elif (sys.argv[1] == "-d") or (sys.argv[1] == "--d") or (sys.argv[1] == "-download") or (
+                sys.argv[1] == "--download"):
+        if len(sys.argv) > 2:
+            manga = sys.argv[2].lower().replace(" ", "-")
+            url = "http://centraldemangas.net/mangas/info/" + manga
+            header = {'User-Agent': 'Mozilla/5.0'}
+            req = urllib2.Request(url, headers=header)
+            page = urllib2.urlopen(req)
+            text = page.read().decode("utf-8")
+
+            soup = BeautifulSoup(text)
+            chapters = []
+            for chapter in soup.find_all('center'):
+                for value in chapter.find_all('a', attrs={'class':'col-xs-1 col-sm-1 col-md-1 col-lg-1'}):
+                    value = str(value['href'])
+                    chapters.append(url+value)
+            chapters.sort()
+
     else:
         print("Download!")
 
