@@ -1,6 +1,6 @@
 Mangopy
 =======
 
-[![Build Status](https://travis-ci.org/CristinaSilvaEng/Mangopy.svg?branch=master)](https://travis-ci.org/CristinaSilvaEng/Mangopy)
+https://travis-ci.org/CristinaSilvaEng/Mangopi.svg?branch=develop
 
 Manga Downloader or something like that.
