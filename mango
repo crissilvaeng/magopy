@@ -14,10 +14,12 @@ if (len(sys.argv) == 1):
 else:
 
     if (sys.argv[1] == "-h") or (sys.argv[1] == "--h") or (sys.argv[1] == "-help") or (sys.argv[1] == "--help"):
-        print("Usage: mango [--avaliable][--download]... <NAME>\n")
+        print("Usage: mango [--avaliable][--download]... <NAME> [--all][--chapter]...<CHAPTER>\n")
         print("The most commonly used mango command are:")
         print("\tavaliable\tVerify that the manga is available")
         print("\tdownload\tDownload a Manga informed")
+        print("\tchapter\t\tDownload a chapter informed")
+        print("\tall\t\tDownload all chapters avaliable")
 
     elif (sys.argv[1] == "-a") or (sys.argv[1] == "--a") or (sys.argv[1] == "-avaliable") or (
                 sys.argv[1] == "--avaliable"):
@@ -69,9 +71,32 @@ else:
             for chapter in soup.find_all('center'):
                 for value in chapter.find_all('a', attrs={'class':'col-xs-1 col-sm-1 col-md-1 col-lg-1'}):
                     value = str(value['href'])
-                    chapters.append(url+value)
+                    chapters.append("http://centraldemangas.net"+value)
             chapters.sort()
 
+            if (sys.argv[3] == "-c") or (sys.argv[3] == "--c") or (sys.argv[3] == "-chapter") or (
+                        sys.argv[3] == "--chapter"):
+
+                url = chapters[int(sys.argv[4]) - 1]
+                req = urllib2.Request(url, headers=header)
+                page = urllib2.urlopen(req)
+                text = page.read()
+                soup = BeautifulSoup(text)
+
+                number = []
+                for pags in soup.find_all(attrs={'id':'manga_pages'}):
+                    for pag in pags.find_all('option'):
+                        number.append( url + "#" + str(int( pag['value'])+1))
+
+                images = []
+                for num in number:
+                    req = urllib2.Request(num, headers=header)
+                    page = urllib2.urlopen(req)
+                    text = page.read()
+                    soup = BeautifulSoup(text)
+#Infelizmente este site usa os url's das paginas dentro de um array Javascript.
+#Vou pensar como solucionar este problema.
     else:
         print("Download!")
+
 
